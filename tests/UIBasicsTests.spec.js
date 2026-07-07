@@ -35,10 +35,11 @@ test.skip('Browser Context Playwright test', async ({browser})=>
 //     await expect(page).toHaveTitle("Google");
 // });
 
-test.only('UI controls', async ({page})=>
+test.skip('UI controls', async ({page})=>
 {
     const userName = page.locator('#username');
     const signIn = page.locator('#signInBtn');
+    const documentLink = page.locator("[href*='documents-request']");
     await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
     const dropdown = page.locator("select.form-control");
     await dropdown.selectOption("consult");
@@ -50,5 +51,32 @@ test.only('UI controls', async ({page})=>
     await expect(page.locator("#terms")).toBeChecked();
     await page.locator("#terms").uncheck();
     expect(await page.locator("#terms").isChecked()).toBeFalsy();
+    await expect(documentLink).toHaveAttribute("class","blinkingText");
 
+
+});
+
+
+test.only('Child handling', async ({browser})=>
+{
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const documentLink = page.locator("[href*='documents-request']");
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+
+    const [newPage] = await Promise.all([
+    context.waitForEvent('page'),
+    await documentLink.click()
+    ])
+    
+    const text = await newPage.locator(".red").textContent();
+
+    const arrayText = text.split("@")
+    const domain =  arrayText[1].split(" ")[0]
+    //console.log(domain);
+    await page.locator("#username").fill(domain);
+    console.log(await page.locator("#username").inputValue());
+    
+
+    
 });
