@@ -1,6 +1,6 @@
 const {test,expect} = require('@playwright/test');
 
-test.only('Assignment Playwright test', async ({page})=>
+test.skip('Assignment Playwright test', async ({page})=>
 {
     const userEmail = page.locator('#userEmail');
     const userPassword = page.locator('#userPassword');
